@@ -1,12 +1,8 @@
 package com.example.audio_recorder;
 
-import java.io.File;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,8 +12,6 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	MediaRecorder rec = null;
 	ToggleButton tbtn_rec = null;
-	File dir = null;
-	File file = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,25 +38,19 @@ public class MainActivity extends Activity implements OnClickListener{
 				rec.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 				rec.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 				
-				dir = Environment.getExternalStorageDirectory();
-				file = File.createTempFile("audio", ".mp3", dir);
-				
-				rec.setOutputFile(file.getAbsolutePath());
+				rec.setOutputFile("audio.mp3");
 				rec.prepare();
 				rec.start();
 				
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block				
 			}
 		}
 		
 		else{
 			rec.stop();
 			rec.release();
+			rec = null;
 		}		
 	}
 	
@@ -70,7 +58,12 @@ public class MainActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		rec.stop();
-		rec.release();
+		try {
+			rec.stop();
+			rec.release();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}		
 	}
 }
